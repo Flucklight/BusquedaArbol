@@ -2,6 +2,7 @@ import utility.tree.Arbol;
 import utility.tree.Nodo;
 
 import java.io.IOException;
+import java.util.LinkedList;
 
 public class Main {
     private static Arbol a;
@@ -9,22 +10,22 @@ public class Main {
     public static void main(String[] args) throws IOException {
         a = new Arbol();
         BusquedaAltura();
-        a.reinicio();
-        a.generar(0);
-
+        a.goToRaiz();
+        BusquedaAnchura();
     }
 
-    public static void BusquedaAltura() {
+    private static void BusquedaAltura() {
         System.out.println(" ------------- Busqueda por Altura ------------- ");
+        LinkedList<Nodo> visitados = new LinkedList<>();
         a.mostrarPuntero();
         while (a.getApuntador().getPuntero().getNombre() != 'R') {
-            if (!a.getApuntador().getPuntero().getHijos().isEmpty()) {
+            if (!a.getApuntador().getPuntero().getHijos().isEmpty()){
                 for (Nodo n : a.getApuntador().getPuntero().getHijos()) {
-                    if (n.getPonderacion() != 0) {
-                        n.setPonderacion(0);
-                        a.accederNodo(n);
+                    if (!visitados.contains(n)) {
+                        visitados.add(n);
+                        a.getApuntador().setPuntero(n);
                         break;
-                    } else if (n.equals(a.getApuntador().getPuntero().getHijos().get(a.getApuntador().getPuntero().getHijos().size() - 1))) {
+                    } else if (n.equals(a.getApuntador().getPuntero().getHijos().getLast())) {
                         a.retrocederNodo();
                     }
                 }
@@ -35,18 +36,33 @@ public class Main {
         }
     }
 
-    public static void BusquedaAnchura() {
+    private static void BusquedaAnchura() {
         System.out.println(" ------------- Busqueda por Anchura ------------- ");
-        a.mostrarPuntero();
+        LinkedList<Nodo> visitados = new LinkedList<>();
+        LinkedList<Nodo> visitar = new LinkedList<>();
+        LinkedList<Nodo> tmp;
+        visitar.add(a.getRaiz());
         while (a.getApuntador().getPuntero().getNombre() != 'R') {
-            for (Nodo n : a.getApuntador().getPuntero().getHijos()) {
-                if (n.getNombre() == 'R') {
-                    a.getApuntador().setPuntero(n);
+            tmp = (LinkedList<Nodo>) visitar.clone();
+            for (Nodo n : tmp) {
+                visitar.remove(n);
+                visitados.add(n);
+                a.getApuntador().setPuntero(n);
+                a.mostrarPuntero();
+                if (a.getApuntador().getPuntero().getNombre() == 'R') {
+                    break;
+                } else if (!a.getApuntador().getPuntero().getHijos().isEmpty()) {
+                    for (Nodo b : a.getApuntador().getPuntero().getHijos()) {
+                        if (!visitados.contains(b) && !visitar.contains(b)) {
+                            visitar.add(b);
+                        }
+                    }
                 }
             }
-            for (Nodo n : a.getApuntador().getPuntero().getHijos()) {
-
-            }
         }
+    }
+
+    private static void BusquedaPonderada() {
+
     }
 }

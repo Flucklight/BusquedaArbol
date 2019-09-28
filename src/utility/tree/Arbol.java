@@ -77,4 +77,12 @@ public class Arbol {
     public Apuntador getApuntador() {
         return apuntador;
     }
+
+    public Raiz getRaiz() {
+        return raiz;
+    }
+
+    public void goToRaiz() {
+        this.apuntador.setPuntero(this.raiz);
+    }
 }
